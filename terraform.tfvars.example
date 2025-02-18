@@ -1,0 +1,54 @@
+# DigitalOcean API token
+do_token = "your_token"
+
+# Admin password to access Rancher
+admin_password = "administrator"
+
+# Resources will be prefixed with this to avoid clashing names
+prefix = "myname-tf-do-rke2"
+
+# K3s version
+# k3s_version = "v1.31.5+k3s1"
+
+# Rancher version to install
+# rancher_version = "2.10.2"
+
+# Count of K3s server nodes
+count_server_nodes = "1"
+
+# Count of K3s agent nodes
+count_agent_nodes = "0"
+
+# Region where nodes should be created
+region = "lon1"
+
+# Droplet size for server nodes
+server_size = "s-4vcpu-8gb"
+
+# Droplet size for agent nodes
+agent_size = "s-2vcpu-4gb"
+
+# Image of nodes
+image = "ubuntu-22-04-x64"
+
+# User for image
+user = "root"
+
+# Database engine
+db_engine = "pg"
+
+# Database version
+db_version = "15"
+
+# Database size
+db_size = "db-s-1vcpu-1gb"
+
+# Chart repository for the rancher chart, defaults to the rancher-stable repository
+rancher_chart_repo = "https://releases.rancher.com/server-charts/stable"
+
+# DigitalOcean ssh-keyid
+# ssh_keys = [ "your_key_id" ]
+# Retrieve using (max 200 keys in account): `curl -s -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" "https://api.digitalocean.com/v2/account/keys?per_page=200"  | jq -r '.ssh_keys[] | select(.name=="YOUR_KEY_NAME") | .id'`
+# If you have more than 200 keys in your account, use: `doctl -t $DIGITALOCEAN_TOKEN compute ssh-key list | grep YOUR_KEY_NAME | awk '{ print $1 }'`
+# If this is not specified, you will get an email with the root password
+ssh_keys = []

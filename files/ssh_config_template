@@ -1,0 +1,14 @@
+%{ for index, ip in servers ~}
+Host ${prefix}-server-${index}
+  HostName ${ip}
+  User ${user}
+  StrictHostKeyChecking no
+
+%{ endfor ~}
+%{ for index, ip in agents ~}
+Host ${prefix}-agent-${index}
+  HostName ${ip}
+  User ${user}
+  StrictHostKeyChecking no
+
+%{ endfor ~}
