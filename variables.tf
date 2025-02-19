@@ -30,6 +30,10 @@ variable "k3s_version" {
   default = ""
 }
 
+variable "etcd" {
+  default = true
+}
+
 variable "db_engine" {
   default = "pg"
 }

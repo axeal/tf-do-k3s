@@ -7,13 +7,15 @@ This Terraform setup will:
 - Start `count_server_nodes` amount of K3s server node droplets
 - Start `count_agent_nodes` amount of K3s agent node droplets
 - Create a loadbalancer pointing at the server droplets for ports 80, 443, 6443
-- Create a database for the K3s datastore, according to `db_engine` and `db_version`
-- Install K3s on the server nodes, according to `k3s_version`
+- Install k3s on the first server node, according to `k3s_version`
+- Install k3s on the other server nodes, according to `k3s_version` and join them to the cluster via the loadbalancer
 - Install K3s on the agent nodes, according to `k3s_version`, and join them to the cluster via the loadbalancer
 - Install the cert-manager helm chart
 - Install the Rancher helm chart according to the version specified in `rancher_version` and the chart repository specified in `rancher_chart_repo` (default https://releases.rancher.com/server-charts/stable)
 
 ## Options
+
+- If `etcd` is set to `false`, it will create a database for the K3s datastore, according to `db_engine` and `db_version`
 
 All available options/variables are described in [terraform.tfvars.example](https://github.com/axeal/tf-do-k3s/blob/master/terraform.tfvars.example).
 

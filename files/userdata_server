@@ -5,14 +5,22 @@ mkdir -p /etc/rancher/k3s/
 
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-DATABASE_URI=`echo ${database_uri} | sed -e 's/defaultdb/${database_name}/g' | sed -e 's/postgresql/postgres/g'`
-
 cat <<EOF > /etc/rancher/k3s/config.yaml
 token: "${token}"
-datastore-endpoint: "$DATABASE_URI"
 tls-san:
   - ${lb_ip}
 EOF
+
+%{ if etcd }
+  %{ if count == 0 }
+    export K3S_CLUSTER_INIT="true"
+  %{ else }
+    echo "server: https://${lb_ip}:6443" >> /etc/rancher/k3s/config.yaml
+  %{ endif }
+%{ else }
+  DATABASE_URI=`echo ${database_uri} | sed -e 's/defaultdb/${database_name}/g' | sed -e 's/postgresql/postgres/g'`
+  echo "datastore-endpoint: \"$DATABASE_URI\"" >> /etc/rancher/k3s/config.yaml
+%{ endif }
 
 if [ ! -z "${k3s_version}" ]; then
   export INSTALL_K3S_VERSION="${k3s_version}"

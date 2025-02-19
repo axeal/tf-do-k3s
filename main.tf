@@ -56,6 +56,7 @@ resource "digitalocean_loadbalancer" "k3s-server" {
 }
 
 resource "digitalocean_database_cluster" "k3s" {
+  count                = var.etcd ? 0 : 1
   name                 = "${var.prefix}-k3s"
   engine               = var.db_engine
   version              = var.db_version
@@ -66,7 +67,8 @@ resource "digitalocean_database_cluster" "k3s" {
 }
 
 resource "digitalocean_database_db" "k3s" {
-  cluster_id = digitalocean_database_cluster.k3s.id
+  count      = var.etcd ? 0 : 1
+  cluster_id = digitalocean_database_cluster.k3s[0].id
   name       = "k3s"
 }
 
@@ -86,8 +88,9 @@ resource "digitalocean_droplet" "server-node" {
   user_data = templatefile("files/userdata_server", {
     count              = "${count.index}"
     k3s_version        = var.k3s_version
-    database_uri       = digitalocean_database_cluster.k3s.private_uri
-    database_name      = digitalocean_database_db.k3s.name
+    etcd               = var.etcd
+    database_uri       = var.etcd ? "" : digitalocean_database_cluster.k3s[0].private_uri
+    database_name      = var.etcd ? "" : digitalocean_database_db.k3s[0].name
     rancher_chart_repo = var.rancher_chart_repo
     rancher_version    = var.rancher_version
     admin_password     = var.admin_password
