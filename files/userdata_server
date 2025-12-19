@@ -32,8 +32,24 @@ if [ "${count}" -eq "0" ]; then
 
   curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+  # If user defines rancher prime helm repository, and chart version exists within it, use the prime repository;
+  # otherwise fall back to rancher-latest repository
+  repo=rancher-latest/rancher
+  if [ -n "${rancher_chart_repo}" ]; then
+    helm repo add rancher-prime ${rancher_chart_repo}
+    helm repo update
+
+    # Check if the specified rancher version exists in the rancher-prime repository
+    # Rancher Prime >= 2.13.1 uses rancher-prime chart name, check for both possible names
+    if helm search repo rancher-prime/rancher-prime --version ${rancher_version} --fail-on-no-result; then
+      repo=rancher-prime/rancher-prime
+    elif helm search repo rancher-prime/rancher --version ${rancher_version} --fail-on-no-result; then
+      repo=rancher-prime/rancher
+    fi
+  fi
+
   helm repo add jetstack https://charts.jetstack.io
-  helm repo add rancher ${rancher_chart_repo}
+  helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
   helm repo update
 
   helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
@@ -43,5 +59,5 @@ if [ "${count}" -eq "0" ]; then
     sleep 5
   done
 
-  helm install rancher rancher/rancher --namespace cattle-system --create-namespace --set hostname=${lb_ip}.nip.io --version ${rancher_version} --set bootstrapPassword=${admin_password}
+  helm install rancher $repo --namespace cattle-system --create-namespace --set hostname=${lb_ip}.nip.io --version ${rancher_version} --set bootstrapPassword=${admin_password}
 fi

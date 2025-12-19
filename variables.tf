@@ -59,7 +59,7 @@ variable "ssh_keys" {
 }
 
 variable "rancher_chart_repo" {
-  default = "https://releases.rancher.com/server-charts/stable"
+  default = ""
 }
 
 variable "rancher_version" {
@@ -69,4 +69,3 @@ variable "rancher_version" {
 variable "admin_password" {
   default = "adminadminadmin"
 }
-
