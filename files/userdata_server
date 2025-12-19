@@ -3,6 +3,12 @@ set -x
 
 mkdir -p /etc/rancher/k3s/
 
+cat << 'EOF' > /etc/profile.d/rancher.sh
+source <(kubectl completion bash)
+alias k=kubectl
+complete -F __start_kubectl k
+EOF
+
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
 cat <<EOF > /etc/rancher/k3s/config.yaml
