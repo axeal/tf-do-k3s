@@ -1,15 +1,17 @@
 #!/bin/bash
 set -x
 
+# Create K3s config file
 mkdir -p /etc/rancher/k3s/
-
 cat <<EOF > /etc/rancher/k3s/config.yaml
 token: "${token}"
 server: https://${lb_ip}:6443
 EOF
 
+# Set k3s version if specified
 if [ ! -z "${k3s_version}" ]; then
   export INSTALL_K3S_VERSION="${k3s_version}"
 fi
 
+# Install K3s agent
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="agent" sh -
