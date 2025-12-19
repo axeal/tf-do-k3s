@@ -3,6 +3,7 @@ set -x
 
 # Setup shell profile with kubectl bash completion and alias
 cat << 'EOF' > /etc/profile.d/rancher.sh
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 source <(kubectl completion bash)
 alias k=kubectl
 complete -F __start_kubectl k
